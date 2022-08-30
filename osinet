@@ -1,0 +1,229 @@
+Sub osinet()
+'
+' test3 Osinet
+'
+'Declare variables
+    Dim domaineRoot, osinetFileRoot, etsdFileRoot, versionOsinet, dernierMaj, myFile, firstWs, newDomaine, oldDomaine, cadre, env, libelle1, libelle2, libelle3, url, endUrl, height, doubleHeight, fo, dad, pr, libelleLong, strContent, strContentEtsd, myPageName, myPageNameContent, myAuthent, ip, version, linkDomaine, myLinks, ticSpanClass, ticCppSpanClass, tisSpanClass, vaSpanClass, vaCppSpanClass, benchSpanClass, approSpanClass, prodSpanClass, pmsSpanClass, redSpanClass, greenSpanClass, orangeSpanClass, spanEnd, dernierMajDate, dernierMajNom, dernierMajMail, myCadreName, myPageNameContentEtsd, mySubTitleName As String
+    Dim text(3)
+    Dim firstTime As Boolean
+    Dim myBoucleInit, compteur1, compteur2, compteurMemeCadre, boucle4, tableStartPoint, paramStartCol, cadreCol, envCol, VersionCol, libelle1Col, libelle2Col, libelle3Col, ipCol, urlCol, endUrlCol, hauteurCol, foCol, dadCol, lien1LibelleCol, lien2LibelleCol, lien3LibelleCol, lien4LibelleCol, lien5LibelleCol, lien6LibelleCol, countBlocs As Integer
+    Dim ws As Worksheet
+
+'Osinet and Wiki Jahia : Initialising main variables
+    oldDomaine = ""
+    firstWs = True
+    tableStartPoint = 12
+    paramStartCol = 2
+    cadreCol = 1
+    envCol = 2
+    VersionCol = 3
+    libelle1Col = 4
+    libelle2Col = 5
+    libelle3Col = 6
+    ipCol = 7
+    urlCol = 8
+    endUrlCol = 9
+    hauteurCol = 10
+    foCol = 11
+    dadCol = 12
+    
+' Osinet : Select the "paramètres" tab to read the global variables
+    Sheets("Paramètres").Select
+    
+' Osinet  read the global variables
+    domaineRoot = Cells(2, 2)
+    osinetFileRoot = Cells(3, 2)
+    versionOsinet = Cells(4, 2)
+    dernierMajDate = Cells(5, 2)
+    dernierMajNom = Cells(6, 2)
+    dernierMajMail = Cells(7, 2)
+        
+' Osinet : Testing that osinetFileRoot is available and opening the index file for output
+    On Error GoTo errHandler:
+        Open osinetFileRoot & "\index.html" For Output As #1
+    On Error GoTo 0
+    
+' Osinet : Read and stock in the variables text(0), text(1) and text(2) the 3 templates for Osinet's details pages
+    For myBoucleInit = 0 To 2
+        myFile = osinetFileRoot & "\templates\template-" + CStr(myBoucleInit) + ".html"
+        Open myFile For Input As #3
+        Do Until EOF(3)
+            Line Input #3, textline
+            text(myBoucleInit) = text(myBoucleInit) & textline & vbNewLine
+        Loop
+        Close #3
+    Next myBoucleInit
+
+' Osinet : strContent will be incremented with Html fragments to make up the Osinet index.html file
+' Osinet : strContent (index.html) => Writing the start of the index.html file
+    strContent = "<html  lang='fr'>" + vbNewLine + "<head>" + vbNewLine + "<title>OSINET 2</title>" + vbNewLine + "<link rel='stylesheet' href='css/style.css'>" + vbNewLine + "<link rel='shortcut icon' href='osinet2/images/favicon.ico' type='image/x-icon'>" + vbNewLine + "<link rel='icon' href='images/favicon.ico' type='image/x-icon'>" + vbNewLine + "</head>" + vbNewLine + "<body>" + vbNewLine + "<main>" + vbNewLine + "<div class='first_container'>" + vbNewLine + "<div id='header'>" + versionOsinet + "<br /><img src='images/logo-osinet.png'></div>" + vbNewLine + "<script src='js/testchrome.js'></script>" + vbNewLine
+    
+' Osinet : Loop over Worksheets
+    For Each ws In Sheets
+        'Osinet : Skip the first Worksheet which only comtains the global variables
+        If firstWs = False Then
+        
+        'Osinet : Read the "paramètres" variables in the worksheet
+            newDomaine = ws.Cells(2, paramStartCol)
+            pr = ws.Cells(3, paramStartCol)
+            libelleLong = ws.Cells(4, paramStartCol)
+            height = Str(ws.Cells(5, paramStartCol))
+            doubleHeight = Str(ws.Cells(5, paramStartCol) * 2)
+            myAuthent = ws.Cells(6, paramStartCol)
+            
+        'Osinet : strContent (index.html) => Insert a title, into the index file,  if oldDomaine (intialised as "") <> newdomaine. A title is inserted for each worksheet
+            If newDomaine <> oldDomaine Then
+                strContent = strContent + vbNewLine + "<h1 class='title'>" + newDomaine + "</h1>" + vbNewLine
+                oldDomaine = newDomaine
+            End If
+        
+        'Osinet : strContent (index.html) => Html for the start of a dropdown menu
+            strContent = strContent + "<div class='accordion'>" + vbNewLine + "<div class='accordion__item'>" + vbNewLine + "<div class='accordion__item__header'>" + pr + " - " + libelleLong + "</div>" + vbNewLine + "<div class='accordion__item__content'>" + vbNewLine
+             
+        'Osinet : Loop inside worksheet - initialise compteur1 and countBlocs
+            compteur1 = tableStartPoint
+            countBlocs = 0
+            
+            'Osinet : for each line in the worksheet starting from compteur1 (tableStartPoint)
+            While ws.Cells(compteur1, cadreCol) <> ""
+            
+                ' Osinet : If a new block is starting
+                If Left(ws.Cells(compteur1, cadreCol), 1) = ">" Then
+                    
+                    ' Osinet : strContent (index.html) => If it's not the first block of the worksheet, the preceeding block is closed
+                    If compteur1 <> tableStartPoint Then strContent = strContent + "</ul>" + vbNewLine + "</div>" + vbNewLine
+                    
+                    ' Osinet : strContent (index.html) => If a multiple of three blocks have been created then a new line is forced
+                    If countBlocs <> 0 And countBlocs Mod 3 = 0 Then
+                        strContent = strContent + "<div style='clear:both'></div>"
+                    End If
+                    
+                    ' Osinet : as it is a new block, countBlocs is incremented by 1
+                    countBlocs = countBlocs + 1
+                    
+                    ' Osinet : getting the text for the new header of the block
+                    mySubTitleName = Mid(ws.Cells(compteur1, cadreCol), 2, Len(ws.Cells(compteur1, cadreCol)))
+                    
+                    ' Osinet : strContent (index.html) => Writing the header of the new block
+                    strContent = strContent + "<div class='list-de-liens'>" + vbNewLine + "<h3>" + mySubTitleName + "</h3>" + vbNewLine
+                    strContent = strContent + "<ul>" + vbNewLine
+                    
+                    ' Osinet : As this is a new block, compteur2 is initialised / reinitialised to 0
+                    compteur2 = 0
+                    
+                ' Osinet : If a block is continuing, if the "Env." of the line is different to the "Env." of the preceeding line
+                ElseIf ws.Cells(compteur1, envCol) <> ws.Cells(compteur1 - 1, envCol) Then
+                
+                    'Osinet : If it's the start of a new "Env." then get parameters dad, height and doubleHeight
+                    If compteur2 = 0 Then
+                        dad = ws.Cells(compteur1, dadCol)
+                        If ws.Cells(compteur1, hauteurCol) <> "" Then
+                            height = Str(ws.Cells(compteur1, hauteurCol))
+                            doubleHeight = Str(ws.Cells(compteur1, hauteurCol) * 2)
+                        End If
+                    End If
+                    
+                    ' Osinet : Initialise variables for creating a details page
+                    compteur2 = compteur1
+                    firstTime = True
+                    envValue = ws.Cells(compteur2, envCol)
+                    compteurMemeCadre = 0
+                            
+                    '**********************************
+                    ' Osinet : Creating a details page
+                    '**********************************
+                    
+                    ' Osinet : While the "Env" remains the same
+                    While ws.Cells(compteur2, envCol) = envValue
+                        
+                        ' Osinet : Read the all the variables in the line
+                        cadre = ws.Cells(compteur2, cadreCol)
+                        env = ws.Cells(compteur2, envCol)
+                        version = ws.Cells(compteur2, VersionCol)
+                        libelle1 = ws.Cells(compteur2, libelle1Col)
+                        libelle2 = ws.Cells(compteur2, libelle2Col)
+                        libelle3 = ws.Cells(compteur2, libelle3Col)
+                        url = ws.Cells(compteur2, urlCol)
+                        endUrl = ws.Cells(compteur2, endUrlCol)
+                        fo = ws.Cells(compteur2, foCol)
+                        
+                        ' Osinet : If this is the first server in the "Env.", create the name of, and open, a new file
+                        If firstTime = True Then
+                            myFileName = pr + "_" + env + "_" + mySubTitleName + ".html"
+                            myFileName = Replace(myFileName, " ", vbNullString)
+                            myPageName = "\" + myFileName
+                            Open osinetFileRoot & myPageName For Output As #3
+                            
+                            ' Osinet : myPageNameContent will containe the Html of the detail pages
+                            ' Osinet : myPageNameContent => Write the start of the details page up to the beginning of the table "myInstance"
+                            myPageNameContent = myPageNameContent + text(0)
+                            myPageNameContent = myPageNameContent + "var myAuthent = '" + myAuthent + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myFirstEndURL = '" + endUrl + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myControlDomainIn = '" + dad + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + text(1)
+                            myPageNameContent = myPageNameContent + "var myFileName = '" + myFileName + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myDomaineRoot = '" + domaineRoot + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myPR = '" + pr + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myLibelleText='" + libelleLong + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myHeight = '" + height + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myHeightDouble = '" + doubleHeight + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myCadre ='" + cadre + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myEnv = '" + env + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myLibelleText1 = '" + libelle1 + "';" & vbNewLine
+                            myPageNameContent = myPageNameContent + "var myInstance = [" & vbNewLine
+                                                        
+                            firstTime = False
+                        End If
+                        
+                        ' Osinet : myPageNameContent => write the serveur details of each line
+                        myPageNameContent = myPageNameContent + "'" + url + "***" + libelle2 + " " + libelle3 + "***" + endUrl + "***" + fo + "'," & vbNewLine
+                        compteur2 = compteur2 + 1
+                        compteurMemeCadre = compteurMemeCadre + 1
+                    Wend
+                    
+                    ' Osinet : myPageNameContent => write the end of the details page
+                    myPageNameContent = myPageNameContent + "];" & vbNewLine + "var myWindowCount = " + Str(compteurMemeCadre) + ";" + text(2)
+                    
+                    ' Osinet : write myPageNameContent into the details Html file and close it
+                    Print #3, myPageNameContent
+                    Close #3
+                    
+                    ' Osinet : reinitialise myPageNameContent for the next details page
+                    myPageNameContent = ""
+                    
+                    ' Osinet : If the line is for the production, the link will be strong and red
+                    myStyleProd = ""
+                    If ws.Cells(compteur1, 2) = "PROD" Then myStyleProd = "style='font-weight:700;color:#9a00bb'"
+                    
+                    ' Osinet : strContent (index.html) => Writing the line for the "Env."
+                    strContent = strContent + "<li>" + vbNewLine + "<a " + myStyleProd + " target='_self' href='./" + myFileName + "'>" + ws.Cells(compteur1, 2) + "<span class='small-text'> &nbsp; &nbsp;[ " + ws.Cells(compteur1, 1) + " ]</span></a>" + vbNewLine + "</li>" + vbNewLine
+                    ' Osinet : putting the "Env." counter back to 0
+                    compteur2 = 0
+                End If
+                ' Osinet : putting the "Env." counter back to 0
+                compteur1 = compteur1 + 1
+            Wend
+            ' Osinet : strContent (index.html) => Writing html for the end of a domaine (the end of a worksheet)
+            strContent = strContent + "</ul>" + vbNewLine + "</div>" + vbNewLine + "</div>" + vbNewLine + "</div>" + vbNewLine + "</div>" + vbNewLine
+        Else
+            ' Osinet and Wiki Jahia : putting the First Worksheet to False
+            firstWs = False
+        End If
+    Next ws
+    
+' Osinet : strContent (index.html) => Writing Html for the footer link
+dernierMaj = dernierMajDate + " " + "par <a href='mailto:" + dernierMajMail + "?subject=Osinet 2' title='Envoyer un mail &agrave; " + dernierMajNom + "'>" + dernierMajNom + "</a>"
+
+' Osinet : strContent (index.html) => Writing footer
+strContent = strContent + "<div id='footer'><div id='footertexte'> Derni&egrave;re mise &agrave; jour : " + dernierMaj + "</div></div></div></main><script src='https://code.jquery.com/jquery-3.4.1.min.js'></script><script src='js/accordion.js'></script></body></html>"
+
+' Osinet : Save index.html
+Print #1, strContent
+Close #1
+
+Exit Sub
+
+errHandler:
+x = MsgBox("Erreur : " + osinetFileRoot + " est inaccessible", vbCritical, "Osinet 2")
+
+End Sub
