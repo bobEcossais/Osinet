@@ -1,0 +1,170 @@
+Sub wikijahia()
+'
+' wikijahia Macro
+'
+'Declare variables
+    Dim etsdFileRoot, firstWs, newDomaine, oldDomaine, cadre, env, libelle1, libelle2, libelle3, url, endUrl, pr, strContentEtsd, ip, version, linkDomaine, myLinks, ticSpanClass, ticCppSpanClass, tisSpanClass, vaSpanClass, vaCppSpanClass, benchSpanClass, approSpanClass, prodSpanClass, pmsSpanClass, redSpanClass, greenSpanClass, orangeSpanClass, spanEnd, myCadreName, myPageNameContentEtsd As String
+    
+    Dim boucle1, boucle2, boucle3, boucle4, tableStartPoint, paramStartCol, cadreCol, envCol, VersionCol, libelle1Col, libelle2Col, libelle3Col, ipCol, urlCol, endUrlCol, lien1LibelleCol As Integer
+    
+    Dim ws As Worksheet
+
+'Initialising main variables
+    oldDomaine = ""
+    firstWs = True
+    tableStartPoint = 12
+    paramStartCol = 2
+    cadreCol = 1
+    envCol = 2
+    VersionCol = 3
+    libelle1Col = 4
+    libelle2Col = 5
+    libelle3Col = 6
+    ipCol = 7
+    urlCol = 8
+    endUrlCol = 9
+    lien1LibelleCol = 13
+    ticSpanClass = "<span class='tic-blue-bold'>"
+    ticCppSpanClass = "<span class='tic-cpp-light-grey-bold'>"
+    tisSpanClass = "<span class='tis-orange-bold'>"
+    vaSpanClass = "<span class='va-green-bold'>"
+    vaCppSpanClass = "<span class='va-cpp-grey-bold'>"
+    benchSpanClass = "<span class='bench-light-violet-bold'>"
+    approSpanClass = "<span class='appro-dark-violet-bold'>"
+    prodSpanClass = "<span class='prod-red-bold'>"
+    pmsSpanClass = "<span class='pms-orange-bold'>"
+    redSpanClass = "<span class='red'>"
+    greenSpanClass = "<span class='green'>"
+    orangeSpanClass = "<span class='orange'>"
+    spanEnd = "</span>"
+    
+    
+' Select the "paramètres" tab and read the global variables
+    Sheets("Paramètres").Select
+    etsdFileRoot = Cells(8, 2)
+    
+' Testing that etsdFileRoot is available
+    On Error GoTo errHandler1:
+        Open etsdFileRoot & "\index.txt" For Output As #2
+    On Error GoTo 0
+    Close #2
+    
+' removing all files inetsdFileRoot
+    Kill etsdFileRoot & "\*.txt"
+    
+' Loop over Worksheets
+    For Each ws In Sheets
+        'Skip the first Worksheet which only comtains the global variables (firstWs is initialise as True)
+        If firstWs = False Then
+        'Read the "paramètres" variables in the worksheet
+            newDomaine = ws.Cells(2, paramStartCol)
+            pr = ws.Cells(3, paramStartCol)
+            
+             
+            'Loop inside worksheet
+            boucle1 = tableStartPoint
+            
+            While ws.Cells(boucle1, cadreCol) <> ""
+                If Left(ws.Cells(boucle1, cadreCol), 1) = ">" Then
+                    myCadreName = Mid(ws.Cells(boucle1, cadreCol), 2, Len(ws.Cells(boucle1, cadreCol)))
+                    myPageNameContentEtsd = "## " + pr + " - Cadre " + myCadreName & vbNewLine & vbNewLine + "|  Cadre  |  Env.  |  Version  |  Machine  |  Type  |  IP  | URL |  Raccourcis  |" & vbNewLine
+                    myPageNameContentEtsd = myPageNameContentEtsd + "| ------- | ------ | --------- | --------- | ------ | ---- | --- | ------------ |" & vbNewLine
+                    
+                    Open etsdFileRoot & "\" + pr + "-" + myCadreName + ".txt" For Output As #4
+
+                    boucle2 = 0
+                    'If ws.Cells(boucle1, envCol) <> ws.Cells(boucle1 - 1, envCol) Then
+                Else
+                    boucle2 = boucle1
+                    firstTime = True
+                    envValue = ws.Cells(boucle2, envCol)
+                    boucle3 = 0
+                    linkDomaine = ""
+                    myLinks = " "
+                    
+                    '*****************************
+                    '    création sous-pages
+                    '*****************************
+                    While ws.Cells(boucle2, envCol) = envValue
+                        cadre = ws.Cells(boucle2, cadreCol)
+                        env = ws.Cells(boucle2, envCol)
+                        version = ws.Cells(boucle2, VersionCol)
+                        libelle1 = ws.Cells(boucle2, libelle1Col)
+                        libelle2 = ws.Cells(boucle2, libelle2Col)
+                        libelle3 = ws.Cells(boucle2, libelle3Col)
+                            Select Case libelle3
+                                Case "[B]"
+                                    spanStartLibelle3 = greenSpanClass
+                                Case "[P]"
+                                    spanStartLibelle3 = redSpanClass
+                                Case "[A]"
+                                    spanStartLibelle3 = orangeSpanClass
+                                Case Else
+                                    spanStartLibelle3 = "<span>"
+                            End Select
+                        ip = ws.Cells(boucle2, ipCol)
+                        url = ws.Cells(boucle2, urlCol)
+                        endUrl = ws.Cells(boucle2, endUrlCol)
+                        
+                        For boucle4 = lien1LibelleCol To lien1LibelleCol + 18 Step 3
+                            myLinkSeparator = " / "
+                            If boucle4 = lien1LibelleCol Then myLinkSeparator = ""
+                            If ws.Cells(boucle2, boucle4) <> "" Then
+                                linkDomaine = ws.Cells(boucle2, boucle4 + 1)
+                                If linkDomaine = "" Then linkDomaine = ws.Cells(boucle2, urlCol)
+                                myLinks = myLinks + myLinkSeparator + "[" + ws.Cells(boucle2, boucle4) + "](" + linkDomaine + ws.Cells(boucle2, boucle4 + 2) + " " + Chr(34) + linkDomaine + ws.Cells(boucle2, boucle4 + 2) + Chr(34) + ")"
+                            Else
+                                boucle4 = lien1LibelleCol + 18
+                            End If
+                        Next boucle4
+                        
+                        lien1Libelle = ws.Cells(boucle2, lien1LibelleCol)
+                        If firstTime = True Then
+                            Select Case env
+                                Case "PROD"
+                                    spanStart = prodSpanClass
+                                Case "PMS"
+                                    spanStart = pmsSpanClass
+                                Case "APPRO"
+                                    spanStart = approSpanClass
+                                Case "BENCH"
+                                    spanStart = benchSpanClass
+                                Case "VA CPP"
+                                    spanStart = vaCppSpanClass
+                                Case "VA"
+                                    spanStart = vaSpanClass
+                                Case "TIS"
+                                    spanStart = tisSpanClass
+                                Case "TIC"
+                                    spanStart = ticSpanClass
+                                Case Else
+                                    spanStart = "<span>"
+                            End Select
+                            firstTime = False
+                        End If
+                        If libelle2 <> "VIP" Then
+                            myPageNameContentEtsd = myPageNameContentEtsd + "| " + spanStart + cadre + spanEnd + " | " + spanStart + env + spanEnd + " | " + version + " | " + libelle2 + " | " + spanStartLibelle3 + libelle3 + spanEnd + " | " + spanStart + ip + spanEnd + " | [" + url + endUrl + "](" + url + endUrl + " " + Chr(34) + url + endUrl + Chr(34) + ") | " + myLinks + " | " & vbNewLine
+                        End If
+                        myLinks = ""
+                        boucle2 = boucle2 + 1
+                        boucle3 = boucle3 + 1
+                    Wend
+                   
+                    boucle2 = 0
+                End If
+                If Left(ws.Cells(boucle1 + 1, cadreCol), 1) = ">" Or ws.Cells(boucle1 + 1, cadreCol) = "" Then
+                    Print #4, myPageNameContentEtsd
+                    Close #4
+                End If
+                boucle1 = boucle1 + 1
+            Wend
+        Else
+            firstWs = False
+        End If
+    Next ws
+
+Exit Sub
+
+errHandler1:
+x = MsgBox("Erreur : " + etsdFileRoot + " est inaccessible", vbCritical, "Osinet 2")
+End Sub
