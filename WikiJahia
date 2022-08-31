@@ -1,3 +1,4 @@
+
 Sub wikijahia()
 '
 ' wikijahia Macro
@@ -139,12 +140,11 @@ Sub wikijahia()
             firstWs = False
         End If
     Next ws
+    
+MsgBox ("Mise à jour wikiJahia faite")
 
 Exit Sub
 
 errHandler1:
 x = MsgBox("Erreur : " + etsdFileRoot + " est inaccessible", vbCritical, "Osinet 2")
 End Sub
-
-
-
