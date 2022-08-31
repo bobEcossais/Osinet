@@ -1,42 +1,7 @@
 Sub osinet()
 '
-' test3 Osinet
+' osinet Macro
 '
-'Declare variables
-    Dim domaineRoot, osinetFileRoot, etsdFileRoot, versionOsinet, dernierMaj, myFile, firstWs, newDomaine, oldDomaine, cadre, env, libelle1, libelle2, libelle3, url, endUrl, height, doubleHeight, fo, dad, pr, libelleLong, strContent, strContentEtsd, myPageName, myPageNameContent, myAuthent, ip, version, linkDomaine, myLinks, ticSpanClass, ticCppSpanClass, tisSpanClass, vaSpanClass, vaCppSpanClass, benchSpanClass, approSpanClass, prodSpanClass, pmsSpanClass, redSpanClass, greenSpanClass, orangeSpanClass, spanEnd, dernierMajDate, dernierMajNom, dernierMajMail, myCadreName, myPageNameContentEtsd, mySubTitleName As String
-    Dim text(3)
-    Dim firstTime As Boolean
-    Dim myBoucleInit, compteur1, compteur2, compteurMemeCadre, boucle4, tableStartPoint, paramStartCol, cadreCol, envCol, VersionCol, libelle1Col, libelle2Col, libelle3Col, ipCol, urlCol, endUrlCol, hauteurCol, foCol, dadCol, lien1LibelleCol, lien2LibelleCol, lien3LibelleCol, lien4LibelleCol, lien5LibelleCol, lien6LibelleCol, countBlocs As Integer
-    Dim ws As Worksheet
-
-'Osinet and Wiki Jahia : Initialising main variables
-    oldDomaine = ""
-    firstWs = True
-    tableStartPoint = 12
-    paramStartCol = 2
-    cadreCol = 1
-    envCol = 2
-    VersionCol = 3
-    libelle1Col = 4
-    libelle2Col = 5
-    libelle3Col = 6
-    ipCol = 7
-    urlCol = 8
-    endUrlCol = 9
-    hauteurCol = 10
-    foCol = 11
-    dadCol = 12
-    
-' Osinet : Select the "paramètres" tab to read the global variables
-    Sheets("Paramètres").Select
-    
-' Osinet  read the global variables
-    domaineRoot = Cells(2, 2)
-    osinetFileRoot = Cells(3, 2)
-    versionOsinet = Cells(4, 2)
-    dernierMajDate = Cells(5, 2)
-    dernierMajNom = Cells(6, 2)
-    dernierMajMail = Cells(7, 2)
         
 ' Osinet : Testing that osinetFileRoot is available and opening the index file for output
     On Error GoTo errHandler:
