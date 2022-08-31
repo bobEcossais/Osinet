@@ -2,7 +2,7 @@ Sub main()
 '
 ' main Macro
 '
-'Osinet, Wiki Jahia and Tabmodifier : Initialising main variables
+'Main : Initialising main variables
     oldDomaine = ""
     firstWs = True
     tableStartPoint = 12
@@ -19,11 +19,23 @@ Sub main()
     hauteurCol = 10
     foCol = 11
     dadCol = 12
-    
     lien1LibelleCol = 13
-    
     iconTabModifierCol = 31
+    
+' Main : Select the "paramètres" tab to read the global variables
+    Sheets("Paramètres").Select
+    
+' Main : read the global variables
+    domaineRoot = Cells(2, 2)
+    osinetFileRoot = Cells(3, 2)
+    versionOsinet = Cells(4, 2)
+    dernierMajDate = Cells(5, 2)
+    dernierMajNom = Cells(6, 2)
+    dernierMajMail = Cells(7, 2)
+    etsdFileRoot = Cells(8, 2)
+    tabModifierFileRoot = Cells(9, 2)
     
 Call wikijahia1
 
+    
 End Sub
