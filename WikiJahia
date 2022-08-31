@@ -1,29 +1,10 @@
-Sub wikijahia()
+Sub wikijahia1()
 '
 ' wikijahia Macro
 '
-'Declare variables
-    Dim etsdFileRoot, firstWs, newDomaine, oldDomaine, cadre, env, libelle1, libelle2, libelle3, url, endUrl, pr, strContentEtsd, ip, version, linkDomaine, myLinks, ticSpanClass, ticCppSpanClass, tisSpanClass, vaSpanClass, vaCppSpanClass, benchSpanClass, approSpanClass, prodSpanClass, pmsSpanClass, redSpanClass, greenSpanClass, orangeSpanClass, spanEnd, myCadreName, myPageNameContentEtsd As String
-    
-    Dim boucle1, boucle2, boucle3, boucle4, tableStartPoint, paramStartCol, cadreCol, envCol, VersionCol, libelle1Col, libelle2Col, libelle3Col, ipCol, urlCol, endUrlCol, lien1LibelleCol As Integer
-    
-    Dim ws As Worksheet
 
-'Initialising main variables
-    oldDomaine = ""
-    firstWs = True
-    tableStartPoint = 12
-    paramStartCol = 2
-    cadreCol = 1
-    envCol = 2
-    VersionCol = 3
-    libelle1Col = 4
-    libelle2Col = 5
-    libelle3Col = 6
-    ipCol = 7
-    urlCol = 8
-    endUrlCol = 9
-    lien1LibelleCol = 13
+'Initialising wikiJahia variables
+
     ticSpanClass = "<span class='tic-blue-bold'>"
     ticCppSpanClass = "<span class='tic-cpp-light-grey-bold'>"
     tisSpanClass = "<span class='tis-orange-bold'>"
@@ -38,10 +19,6 @@ Sub wikijahia()
     orangeSpanClass = "<span class='orange'>"
     spanEnd = "</span>"
     
-    
-' Select the "paramètres" tab and read the global variables
-    Sheets("Paramètres").Select
-    etsdFileRoot = Cells(8, 2)
     
 ' Testing that etsdFileRoot is available
     On Error GoTo errHandler1:
@@ -168,3 +145,6 @@ Exit Sub
 errHandler1:
 x = MsgBox("Erreur : " + etsdFileRoot + " est inaccessible", vbCritical, "Osinet 2")
 End Sub
+
+
+
