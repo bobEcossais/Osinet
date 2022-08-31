@@ -35,8 +35,8 @@ Sub main()
     etsdFileRoot = Cells(8, 2)
     tabModifierFileRoot = Cells(9, 2)
     
-Call wikijahia
-Call osinet
 
+Call osinet
+Call wikijahia
     
 End Sub
