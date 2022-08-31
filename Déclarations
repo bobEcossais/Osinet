@@ -1,0 +1,5 @@
+'Declare variables
+    Dim domaineRoot, osinetFileRoot, etsdFileRoot, versionOsinet, dernierMaj, myFile, firstWs, newDomaine, oldDomaine, cadre, env, libelle1, libelle2, libelle3, url, endUrl, height, doubleHeight, fo, dad, pr, libelleLong, strContent, strContentEtsd, myPageName, myPageNameContent, myAuthent, ip, version, linkDomaine, myLinks, ticSpanClass, ticCppSpanClass, tisSpanClass, vaSpanClass, vaCppSpanClass, benchSpanClass, approSpanClass, prodSpanClass, pmsSpanClass, redSpanClass, greenSpanClass, orangeSpanClass, spanEnd, dernierMajDate, dernierMajNom, dernierMajMail, myCadreName, myPageNameContentEtsd, mySubTitleName As String
+    Dim text(3)
+    Dim myBoucleInit, boucle1, boucle2, boucle3, boucle4, tableStartPoint, paramStartCol, cadreCol, envCol, VersionCol, libelle1Col, libelle2Col, libelle3Col, ipCol, urlCol, endUrlCol, hauteurCol, foCol, dadCol, lien1LibelleCol, lien2LibelleCol, lien3LibelleCol, lien4LibelleCol, lien5LibelleCol, lien6LibelleCol, countBlocs As Integer
+    Dim ws As Worksheet
