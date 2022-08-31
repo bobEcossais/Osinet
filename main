@@ -1,0 +1,29 @@
+Sub main()
+'
+' main Macro
+'
+'Osinet, Wiki Jahia and Tabmodifier : Initialising main variables
+    oldDomaine = ""
+    firstWs = True
+    tableStartPoint = 12
+    paramStartCol = 2
+    cadreCol = 1
+    envCol = 2
+    VersionCol = 3
+    libelle1Col = 4
+    libelle2Col = 5
+    libelle3Col = 6
+    ipCol = 7
+    urlCol = 8
+    endUrlCol = 9
+    hauteurCol = 10
+    foCol = 11
+    dadCol = 12
+    
+    lien1LibelleCol = 13
+    
+    iconTabModifierCol = 31
+    
+Call wikijahia1
+
+End Sub
