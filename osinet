@@ -186,6 +186,8 @@ strContent = strContent + "<div id='footer'><div id='footertexte'> Derni&egrave;
 Print #1, strContent
 Close #1
 
+MsgBox ("Mise à jour Osinet faite")
+
 Exit Sub
 
 errHandler:
